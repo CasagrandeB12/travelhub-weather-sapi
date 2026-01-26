@@ -1,0 +1,39 @@
+{
+  "configs": [
+    "sapi-weather.xml",
+    "implementations/get-weather.xml",
+    "global.xml",
+    "global-error-handler.xml"
+  ],
+  "secureProperties": [
+    "encrypt.key",
+    "anypoint.platform.client_secret"
+  ],
+  "supportedJavaVersions": [],
+  "redeploymentEnabled": true,
+  "name": "859200e0-96c9-40c4-918e-b36c5d106407:weather-api:1.0.1",
+  "minMuleVersion": "4.9.0",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [],
+      "exportedResources": [
+        "application-types.xml",
+        "dev.yaml",
+        "global-error-handler.xml",
+        "global.xml",
+        "implementations/get-weather.xml",
+        "log4j2.xml",
+        "sapi-weather.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  },
+  "javaSpecificationVersions": [
+    "17"
+  ]
+}

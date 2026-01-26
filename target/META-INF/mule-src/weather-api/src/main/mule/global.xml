@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	 <http:listener-config name="sapi-weather-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${secure::http.port}" />
+    </http:listener-config>
+    <apikit:config name="sapi-weather-config" api="resource::859200e0-96c9-40c4-918e-b36c5d106407:sapi-weather:1.0.1:raml:zip:sapi-weather.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="391e82dd-72e2-4f3d-aa05-d34babc5111a" file="${env}.yaml" key="${encrypt.key}" />
+	<http:request-config name="Open-Mateo" doc:name="HTTP Request configuration" doc:id="bb45a8a6-af68-4d4a-8486-c74db6cbe061" basePath="${secure::weather.api.path}" >
+		<http:request-connection protocol="HTTPS" host="${secure::weather.api.host}" port="${secure::weather.api.port}" />
+	</http:request-config>
+	<api-gateway:autodiscovery apiId="20705542" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="ad937ae2-e2f3-4ba7-a634-971d9b62751d" flowRef="sapi-weather-main" />
+	
+</mule>

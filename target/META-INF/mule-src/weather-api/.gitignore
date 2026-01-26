@@ -21,7 +21,10 @@ tmp/**/*
 *.swp
 *~.nib
 local.properties
+.settings/
 .loadpath
+.project
+.classpath
 
 # External tool builders
 .externalToolBuilders/
@@ -38,6 +41,7 @@ local.properties
 # --------------- #
 # Studio-specific #
 # --------------- #
+target/
 .mule/
 .DS_Store
 velocity.log

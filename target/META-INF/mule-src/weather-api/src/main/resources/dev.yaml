@@ -1,0 +1,7 @@
+http:
+  port: ${http.port}
+
+weather.api:
+  host: "api.open-meteo.com"
+  port: "443"
+  path: "/v1"
