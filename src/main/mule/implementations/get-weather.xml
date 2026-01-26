@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	    <flow name="get:\weather:sapi-weather-config">
+        <logger level="INFO" doc:name="Start Logger" doc:id="0af6fbaa-8b03-476c-a821-8968f6e2eda7" message="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  &quot;logger&quot;: &quot;Start Logger&quot;,&#10;  &quot;correlationId&quot;: vars.correlationId default &quot;N/A&quot;,&#10;  &quot;transactionId&quot;: vars.transactionId default &quot;N/A&quot;,&#10;  &quot;dateTime&quot;: now() as String { format: &quot;yyyy-MM-dd'T'HH:mm:ss'Z'&quot; },&#10;  &quot;flow&quot;: flow.name default &quot;unknown-flow&quot;,&#10;  &quot;layer&quot;: &quot;system&quot;&#10;}]" />
+		<ee:transform doc:name="Set Params" doc:id="5b05fc12-b58b-4dcd-b0eb-d68248d8dd0c">
+			<ee:variables>
+				<ee:set-variable variableName="latitude" ><![CDATA[attributes.queryParams.latitude]]></ee:set-variable>
+				<ee:set-variable variableName="longitude" ><![CDATA[attributes.queryParams.longitude]]></ee:set-variable>
+				<ee:set-variable variableName="start_date" ><![CDATA[attributes.queryParams.'start_date']]></ee:set-variable>
+				<ee:set-variable variableName="end_date" ><![CDATA[attributes.queryParams.'end_date' as Date]]></ee:set-variable>
+				<ee:set-variable variableName="daily" ><![CDATA[attributes.queryParams.daily]]></ee:set-variable>
+				<ee:set-variable variableName="timezone" ><![CDATA[attributes.queryParams.timezone]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<http:request method="GET" doc:name="Open-Mateo" doc:id="eef3a117-2de3-4d9d-872f-60c6c5657873" config-ref="Open-Mateo" path="/forecast">
+			<http:query-params ><![CDATA[#[{
+	"latitude": vars.latitude,
+	"longitude": vars.longitude,
+	"start_date": vars.start_date,
+	"end_date": vars.'end_date',
+	"daily": vars.daily,
+	"timezone": vars.timezone
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"time": payload.daily.time,
+	"temperature_2m_max": payload.daily.temperature_2m_max,
+	"temperature_2m_min": payload.daily.temperature_2m_min,
+	"precipitation_sum": payload.daily.precipitation_sum
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<logger level="INFO" doc:name="End Logger" doc:id="7cbcfa28-a8ef-45a0-ba49-d67a263c9b00" message="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  &quot;logger&quot;: &quot;End Logger&quot;,&#10;  &quot;correlationId&quot;: vars.correlationId default &quot;N/A&quot;,&#10;  &quot;transactionId&quot;: vars.transactionId default &quot;N/A&quot;,&#10;  &quot;dateTime&quot;: now() as String { format: &quot;yyyy-MM-dd'T'HH:mm:ss'Z'&quot; },&#10;  &quot;flow&quot;: flow.name default &quot;unknown-flow&quot;,&#10;  &quot;layer&quot;: &quot;system&quot;&#10;}]" />
+    
+</flow>
+	</mule>
